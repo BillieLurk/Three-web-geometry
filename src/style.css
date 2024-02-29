@@ -21,3 +21,18 @@ body {
   width: 350px;
   z-index: 10;
 }
+
+.point {
+  position: absolute;
+  width: 10px; /* Adjust size as needed */
+  height: 10px; /* Adjust size as needed */
+  background-color: white;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+.point:hover {
+  transform: translate(-50%, -50%) scale(1.5); /* Enlarge on hover */
+  background-color: #ff0000; /* Change color on hover */
+}
