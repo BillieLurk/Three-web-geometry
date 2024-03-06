@@ -1,15 +1,22 @@
 // lineVertexShader
 export const lineVertexShader = `
-    uniform float isInternalLine; // Use float instead of bool
+    
+    uniform vec3 centerPosition; // Center position in world space
 
-    varying vec3 vStartPosition;
-    varying vec3 vEndPosition;
-    varying float vIsInternalLine; // Use float instead of bool
+    varying float vDistanceFromCenter;
+
+    attribute float color; // Add this line
+
+    varying float vColor; // Pass color to fragment shader
 
     void main() {
-        vStartPosition = position;
-        vEndPosition = position;
-        vIsInternalLine = isInternalLine; // Use float value for boolean
+        // Transform centerPosition from world space to model space
+        vec4 modelSpaceCenter = modelMatrix * vec4(centerPosition, 1.0);
+
+        vColor = color;
+        
+        // Now calculate distance in model space, making it invariant to camera movement
+        vDistanceFromCenter = distance(modelSpaceCenter.xyz, position);
 
         gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
     }
@@ -17,15 +24,25 @@ export const lineVertexShader = `
 
 // lineFragmentShader
 export const lineFragmentShader = `
-    varying vec3 vStartPosition;
-    varying vec3 vEndPosition;
-    varying float vIsInternalLine; // Use float instead of bool
+    uniform float offset; // Uniform to define the distance offset for coloring
+    varying float vDistanceFromCenter; // Received from vertex shader
+    varying float vColor;
 
     void main() {
-        if (vIsInternalLine > 0.5) { // Compare with 0.5 for boolean condition
-            gl_FragColor = vec4(0.0, 0.0, 1.0, 1.0); // Blue color for internal lines
-        } else {
-            gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0); // White color for external lines
-        }
+       
+        vec3 colorGradient = mix(vec3(0.0, 0.0, 0.0), vec3(1.0, 1.0, 1.0), vColor);
+       
+        // Ensure effectiveDistance starts increasing only when vDistanceFromCenter is above the offset
+        float effectiveDistance = max(vDistanceFromCenter - offset, 0.0);
+
+        // Apply a scaling factor to make the transition more pronounced
+        // The scaling factor can be adjusted to control how quickly the color transitions beyond the offset
+        float scalingFactor = 5.0; // Adjust this factor to control the sensitivity of the color change
+        float intensityFactor = clamp(effectiveDistance * scalingFactor, 0.0, 1.0);
+
+        // Create a gradient from white to red based on the effective distance
+        vec3 color = mix(colorGradient, vec3(1.0, 0.0, 0.0), intensityFactor);
+
+        gl_FragColor = vec4(color, 1.0);
     }
 `;

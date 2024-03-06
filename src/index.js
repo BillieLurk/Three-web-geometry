@@ -120,14 +120,14 @@ class App {
   #createRenderer() {
     this.renderer = new WebGLRenderer({
       alpha: true,
-      antialias: window.devicePixelRatio === 1,
+      antialias: true
     });
 
     this.container.appendChild(this.renderer.domElement);
 
     this.renderer.setSize(this.screen.x, this.screen.y);
     this.renderer.setPixelRatio(Math.min(1.5, window.devicePixelRatio));
-    this.renderer.setClearColor(0x000000);
+    this.renderer.setClearColor(0xffffff);
     this.renderer.physicallyCorrectLights = true;
   }
 
