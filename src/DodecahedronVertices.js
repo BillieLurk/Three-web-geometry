@@ -14,7 +14,7 @@ class DodecahedronVertices {
     this.vertexColor = opts.vertexColor;
     this.vertexSize = opts.vertexSize;
 
-    this.geometry = new THREE.OctahedronGeometry(this.size, 3);
+    this.geometry = new THREE.DodecahedronGeometry(this.size, 1);
     this.geometry.setAttribute(
       "originalPosition",
       new THREE.BufferAttribute(
@@ -32,6 +32,10 @@ class DodecahedronVertices {
       }
     });
     this.addToScene();
+
+    setInterval(() => {
+      this.createRandomRipple();
+    }, 3000);
   }
 
   createMesh() {
@@ -51,21 +55,19 @@ class DodecahedronVertices {
 
     // Assign colors to each vertex
     for (let i = 0; i < numVertices; i++) {
-        // Assign black (0.0) to first half and white (1.0) to second half
-        lineColors[i] = Math.random() > 0.5 ? 0.0 : 1.0;
+      // Assign black (0.0) to first half and white (1.0) to second half
+      lineColors[i] = Math.random() > 0.5 ? 0.0 : 1.0;
     }
 
     const lineMaterial = new THREE.ShaderMaterial({
-        uniforms: {
-            centerPosition: { value: new THREE.Vector3(0, 0, 0) },
-            offset: { value: this.size + 0.1 }
-        },
-        vertexShader: lineVertexShader,
-        fragmentShader: lineFragmentShader,
-        // Note: No need to pass 'white' as a uniform since it will be a varying attribute
+      uniforms: {
+        centerPosition: { value: new THREE.Vector3(0, 0, 0) },
+        offset: { value: this.size + 0.1 },
+      },
+      vertexShader: lineVertexShader,
+      fragmentShader: lineFragmentShader,
+      // Note: No need to pass 'white' as a uniform since it will be a varying attribute
     });
-
-    
 
     for (let i = 0; i < numVertices; i++) {
       for (let j = i + 1; j < numVertices; j++) {
@@ -80,7 +82,10 @@ class DodecahedronVertices {
     );
     linesGeometry.setIndex(lineIndices);
 
-    linesGeometry.setAttribute('color', new THREE.BufferAttribute(lineColors, 1));
+    linesGeometry.setAttribute(
+      "color",
+      new THREE.BufferAttribute(lineColors, 1)
+    );
 
     return new THREE.LineSegments(linesGeometry, lineMaterial);
   }
@@ -146,7 +151,7 @@ class DodecahedronVertices {
     const randomVertexIndex = Math.floor(Math.random() * numVertices); // Generate a random vertex index
     const ripplePropagationSpeed = 6.0; // Units per second
     const rippleFrequency = 4.0; // Cycles per second
-    const dampingFactor = 1.2 ; // Exponential damping
+    const dampingFactor = 1.2; // Exponential damping
     const rippleAmplitude = 0.8; // Units
     const distanceFalloff = 0.6; // Adjust the falloff effect based on distance
     const startTime = performance.now();
@@ -218,7 +223,7 @@ class DodecahedronVertices {
 
       this.lines.geometry.attributes.position.needsUpdate = true; // Update line positions
       this.geometry.attributes.position.needsUpdate = true;
-      
+
       requestAnimationFrame(animateRipple);
     };
 
