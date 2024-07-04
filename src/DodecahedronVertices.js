@@ -15,7 +15,7 @@ class DodecahedronVertices {
     this.vertexColor = opts.vertexColor;
     this.vertexSize = opts.vertexSize;
 
-    this.geometry = new THREE.DodecahedronGeometry(this.size, 1);
+    this.geometry = new THREE.DodecahedronGeometry(this.size, 2);
     this.geometry.setAttribute(
       "originalPosition",
       new THREE.BufferAttribute(
@@ -52,8 +52,7 @@ class DodecahedronVertices {
     const lineIndices = [];
     const numVertices = this.geometry.attributes.position.count;
 
-    const lineColors = new Float32Array(numVertices * 2); // For each vertex, a color value
-
+    const lineColors = new Float32Array(numVertices * 2);
     // Assign colors to each vertex
     for (let i = 0; i < numVertices; i++) {
       // Assign black (0.0) to first half and white (1.0) to second half
@@ -67,7 +66,6 @@ class DodecahedronVertices {
       },
       vertexShader: lineVertexShader,
       fragmentShader: lineFragmentShader,
-      // Note: No need to pass 'white' as a uniform since it will be a varying attribute
     });
 
     for (let i = 0; i < numVertices; i++) {
@@ -101,9 +99,9 @@ class DodecahedronVertices {
     const originalPositions = this.geometry.attributes.originalPosition.array;
     const linePositions = this.lines.geometry.attributes.position.array;
 
-    const noiseStrength = 0.1; // Adjusted noise strength
-    const noiseScale = 0.2; // Adjusted noise scale
-    const timeScale = 0.4; // Adjusted time scale
+    const noiseStrength = 0.1;
+    const noiseScale = 0.2;
+    const timeScale = 0.4;
 
     for (let i = 0; i < originalPositions.length; i += 3) {
       const position = new THREE.Vector3(

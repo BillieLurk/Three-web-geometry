@@ -1,13 +1,12 @@
 // lineVertexShader
 export const lineVertexShader = `
     
-    uniform vec3 centerPosition; // Center position in world space
-
+    uniform vec3 centerPosition; 
     varying float vDistanceFromCenter;
 
-    attribute float color; // Add this line
+    attribute float color; 
 
-    varying float vColor; // Pass color to fragment shader
+    varying float vColor; 
 
     void main() {
         // Transform centerPosition from world space to model space
@@ -37,11 +36,11 @@ export const lineFragmentShader = `
 
         // Apply a scaling factor to make the transition more pronounced
         // The scaling factor can be adjusted to control how quickly the color transitions beyond the offset
-        float scalingFactor = 5.0; // Adjust this factor to control the sensitivity of the color change
+        float scalingFactor = 5.0; 
         float intensityFactor = clamp(effectiveDistance * scalingFactor, 0.0, 1.0);
 
         // Create a gradient from white to red based on the effective distance
-        vec3 color = mix(colorGradient, vec3(1.0, 0.0, 0.0), intensityFactor);
+        vec3 color = mix(colorGradient, vec3(1.0, 0.2, 0.0), intensityFactor);
 
         gl_FragColor = vec4(color, 1.0);
     }
