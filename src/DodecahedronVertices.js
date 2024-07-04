@@ -2,11 +2,12 @@ import * as THREE from "three";
 import { createNoise3D } from "simplex-noise";
 import { lineFragmentShader, lineVertexShader } from "./lineShader";
 
+//geometry
 class DodecahedronVertices {
   constructor(
     scene,
     camera,
-    opts = { size: 1, vertexColor: 0xffffff, vertexSize: 0.05 }
+    opts = { size: 1, vertexColor: 0xffffff, vertexSize: 0.05 },
   ) {
     this.camera = camera;
     this.scene = scene;
@@ -19,8 +20,8 @@ class DodecahedronVertices {
       "originalPosition",
       new THREE.BufferAttribute(
         this.geometry.attributes.position.array.slice(),
-        3
-      )
+        3,
+      ),
     );
     this.mesh = this.createMesh();
     this.lines = this.createLines();
@@ -78,13 +79,13 @@ class DodecahedronVertices {
     const linesGeometry = new THREE.BufferGeometry();
     linesGeometry.setAttribute(
       "position",
-      new THREE.BufferAttribute(new Float32Array(lineStartPositions), 3)
+      new THREE.BufferAttribute(new Float32Array(lineStartPositions), 3),
     );
     linesGeometry.setIndex(lineIndices);
 
     linesGeometry.setAttribute(
       "color",
-      new THREE.BufferAttribute(lineColors, 1)
+      new THREE.BufferAttribute(lineColors, 1),
     );
 
     return new THREE.LineSegments(linesGeometry, lineMaterial);
@@ -108,7 +109,7 @@ class DodecahedronVertices {
       const position = new THREE.Vector3(
         originalPositions[i],
         originalPositions[i + 1],
-        originalPositions[i + 2]
+        originalPositions[i + 2],
       );
 
       const center = new THREE.Vector3(0, 0, 0);
@@ -116,7 +117,7 @@ class DodecahedronVertices {
         this.noise3D(
           originalPositions[i] * noiseScale + elapsedTime * timeScale,
           originalPositions[i + 1] * noiseScale + elapsedTime * timeScale,
-          originalPositions[i + 2] * noiseScale + elapsedTime * timeScale
+          originalPositions[i + 2] * noiseScale + elapsedTime * timeScale,
         ) + 1.0; // Adjusted noise value range
 
       const distanceFromCenter = position.length(); // Calculate the distance from the center
@@ -166,7 +167,7 @@ class DodecahedronVertices {
         const position = new THREE.Vector3(
           this.geometry.attributes.originalPosition.array[positionIndex],
           this.geometry.attributes.originalPosition.array[positionIndex + 1],
-          this.geometry.attributes.originalPosition.array[positionIndex + 2]
+          this.geometry.attributes.originalPosition.array[positionIndex + 2],
         );
 
         const sourcePosition = new THREE.Vector3(
@@ -178,7 +179,7 @@ class DodecahedronVertices {
           ],
           this.geometry.attributes.originalPosition.array[
             randomVertexIndex * 3 + 2
-          ]
+          ],
         );
 
         const distanceFromSource = position.distanceTo(sourcePosition);
@@ -196,13 +197,13 @@ class DodecahedronVertices {
 
           maxDistortion = Math.max(
             maxDistortion,
-            Math.abs(distortionMagnitude)
+            Math.abs(distortionMagnitude),
           );
 
           const normal = new THREE.Vector3(
             this.geometry.attributes.normal.array[positionIndex],
             this.geometry.attributes.normal.array[positionIndex + 1],
-            this.geometry.attributes.normal.array[positionIndex + 2]
+            this.geometry.attributes.normal.array[positionIndex + 2],
           ).normalize();
 
           const distortion = normal.multiplyScalar(distortionMagnitude);
