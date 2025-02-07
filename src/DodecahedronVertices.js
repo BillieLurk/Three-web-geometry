@@ -2,7 +2,6 @@ import * as THREE from "three";
 import { createNoise3D } from "simplex-noise";
 import { lineFragmentShader, lineVertexShader } from "./lineShader";
 
-//geometry
 class DodecahedronVertices {
   constructor(
     scene,
@@ -15,7 +14,7 @@ class DodecahedronVertices {
     this.vertexColor = opts.vertexColor;
     this.vertexSize = opts.vertexSize;
 
-    this.geometry = new THREE.DodecahedronGeometry(this.size, 2);
+    this.geometry = new THREE.DodecahedronGeometry(this.size, 1);
     this.geometry.setAttribute(
       "originalPosition",
       new THREE.BufferAttribute(
