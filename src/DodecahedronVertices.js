@@ -1,6 +1,8 @@
 import * as THREE from "three";
 import { createNoise3D } from "simplex-noise";
 import { lineFragmentShader, lineVertexShader } from "./lineShader";
+import { ref, onValue } from "firebase/database";
+import { database } from "./firebaseConfig.js";
 
 class DodecahedronVertices {
   constructor(
@@ -33,9 +35,39 @@ class DodecahedronVertices {
     });
     this.addToScene();
 
-    setInterval(() => {
+    this.setupDatabaseListener();
+  }
+
+  setupDatabaseListener() {
+    const dbRef = ref(database, "rippleTrigger");
+
+    onValue(dbRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        console.log(
+          "Database change detected, triggering ripple effect...",
+          data,
+        );
+        this.createBpmRipples(data.bpm);
+        // this.createRandomRipple();
+      }
+    });
+  }
+
+  createBpmRipples(bpm) {
+    if (this.rippleInterval) {
+      clearInterval(this.rippleInterval);
+    }
+
+    const intervalTime = (60 / bpm) * 1000;
+
+    console.log(
+      `Starting BPM Ripples at ${bpm} BPM (${intervalTime} ms per beat)`,
+    );
+
+    this.rippleInterval = setInterval(() => {
       this.createRandomRipple();
-    }, 3000);
+    }, intervalTime);
   }
 
   createMesh() {
