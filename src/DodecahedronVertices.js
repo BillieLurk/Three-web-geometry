@@ -16,7 +16,7 @@ class DodecahedronVertices {
     this.vertexColor = opts.vertexColor;
     this.vertexSize = opts.vertexSize;
 
-    this.geometry = new THREE.DodecahedronGeometry(this.size, 1);
+    this.geometry = new THREE.DodecahedronGeometry(this.size, 0);
     this.geometry.setAttribute(
       "originalPosition",
       new THREE.BufferAttribute(
@@ -39,7 +39,7 @@ class DodecahedronVertices {
   }
 
   setupDatabaseListener() {
-    const dbRef = ref(database, "rippleTrigger");
+    const dbRef = ref(database, "BPM");
 
     onValue(dbRef, (snapshot) => {
       const data = snapshot.val();
@@ -48,8 +48,15 @@ class DodecahedronVertices {
           "Database change detected, triggering ripple effect...",
           data,
         );
-        this.createBpmRipples(data.bpm);
-        // this.createRandomRipple();
+
+        const bpmElements = document.querySelectorAll(".bpm");
+
+        bpmElements.forEach((element) => {
+          element.textContent = `${data}`;
+        });
+
+        // Trigger ripple effect
+        this.createBpmRipples(data);
       }
     });
   }
@@ -87,13 +94,14 @@ class DodecahedronVertices {
     // Assign colors to each vertex
     for (let i = 0; i < numVertices; i++) {
       // Assign black (0.0) to first half and white (1.0) to second half
-      lineColors[i] = Math.random() > 0.5 ? 0.0 : 1.0;
+      lineColors[i] = 0.0;
     }
 
     const lineMaterial = new THREE.ShaderMaterial({
       uniforms: {
         centerPosition: { value: new THREE.Vector3(0, 0, 0) },
-        offset: { value: this.size + 0.1 },
+        offset: { value: this.size },
+        thickness: { value: 5.0 },
       },
       vertexShader: lineVertexShader,
       fragmentShader: lineFragmentShader,

@@ -1,24 +1,26 @@
 // lineVertexShader
 export const lineVertexShader = `
+uniform vec3 centerPosition;
+uniform float thickness;  // Add thickness uniform
+
+varying float vDistanceFromCenter;
+varying float vColor;
+attribute float color;
+
+void main() {
+    vec4 modelSpaceCenter = modelMatrix * vec4(centerPosition, 1.0);
+    vColor = color;
+    vDistanceFromCenter = distance(modelSpaceCenter.xyz, position);
+
+    // Calculate line direction in screen space
+    vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+    vec4 projected = projectionMatrix * mvPosition;
+    vec2 screenNormal = normalize(projected.xy / projected.w);
     
-    uniform vec3 centerPosition; 
-    varying float vDistanceFromCenter;
-
-    attribute float color; 
-
-    varying float vColor; 
-
-    void main() {
-        // Transform centerPosition from world space to model space
-        vec4 modelSpaceCenter = modelMatrix * vec4(centerPosition, 1.0);
-
-        vColor = color;
-        
-        // Now calculate distance in model space, making it invariant to camera movement
-        vDistanceFromCenter = distance(modelSpaceCenter.xyz, position);
-
-        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-    }
+    // Offset vertices perpendicular to line direction
+    vec2 offset = vec2(-screenNormal.y, screenNormal.x) * thickness * 0.005;
+    gl_Position = projected + vec4(offset, 0.0, 0.0);
+}
 `;
 
 // lineFragmentShader

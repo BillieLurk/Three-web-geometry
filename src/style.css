@@ -1,3 +1,8 @@
+@font-face {
+  font-family: "Apache";
+  src: url("AldotheApache.ttf") format("truetype");
+}
+
 body {
   overflow: hidden;
   height: 100vh;
@@ -22,6 +27,37 @@ body {
   z-index: 10;
 }
 
+.container {
+  height: 100%;
+  position: relative;
+}
+
+.top-left {
+  font-family: Apache;
+  margin: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  font-size: 420px;
+  letter-spacing: 60px;
+  mix-blend-mode: difference;
+  color: white;
+}
+
+.bottom-right {
+  font-family: Apache;
+  margin: 0;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+
+  font-size: 420px;
+  letter-spacing: 60px;
+  mix-blend-mode: difference;
+  color: white;
+}
+
 .point {
   position: absolute;
   width: 10px; /* Adjust size as needed */
@@ -29,10 +65,13 @@ body {
   background-color: white;
   border-radius: 50%;
   transform: translate(-50%, -50%);
-  transition: transform 0.3s ease, background-color 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    background-color 0.3s ease;
 }
 
 .point:hover {
   transform: translate(-50%, -50%) scale(1.5); /* Enlarge on hover */
   background-color: #ff0000; /* Change color on hover */
 }
+
